@@ -1,197 +1,697 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PSB Online Al Azhar Muncar - Dashboard & Pendaftaran</title>
+    <title>PSB Online Al Azhar Muncar - Pondok Pesantren Modern</title>
+    <meta name="description" content="Sistem Pendaftaran Santri Baru (PSB) Online Pondok Pesantren Modern Al Azhar Muncar Banyuwangi.">
     
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Fonts Google: Cinzel & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Tailwind untuk tata letak cepat -->
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        emerald: {
+                            50: '#ecfdf5', 100: '#d1fae5', 200: '#a7f3d0', 300: '#6ee7b7',
+                            400: '#34d399', 500: '#10b981', 600: '#059669', 700: '#047857',
+                            800: '#065f46', 900: '#064e3b', 950: '#022c22',
+                        },
+                        amber: {
+                            400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        'serif-islamic': ['Cinzel', 'Georgia', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        :root { --emerald-950: #022c22; --emerald-900: #064e3b; --amber-400: #fbbf24; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; margin: 0; }
-        .font-serif-islamic { font-family: 'Cinzel', serif; }
-        .hero-bg { background: linear-gradient(180deg, #022c22 0%, #064e3b 100%); position: relative; overflow: hidden; }
-        .hero-pattern { absolute; inset: 0; opacity: 0.1; background-image: radial-gradient(#fbbf24 1px, transparent 1px); background-size: 30px 30px; }
-        
-        /* Modal Style */
-        .modal { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(2, 44, 34, 0.9); backdrop-blur: 8px; align-items: center; justify-content: center; padding: 20px; }
-        .modal.active { display: flex; }
+        .font-serif-islamic { font-family: 'Cinzel', Georgia, serif; }
+        .hero-pattern {
+            background-color: #022c22;
+            background-image: radial-gradient(#d97706 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .modal-active { display: flex !important; }
     </style>
 </head>
-<body>
+<body class="bg-stone-50 text-stone-900 antialiased selection:bg-emerald-800 selection:text-amber-100 font-sans">
 
-    <!-- NAVBAR -->
-    <nav class="sticky top-0 z-50 bg-[#022c22] border-b border-emerald-800 shadow-xl px-6 py-4">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <img id="view-logo" src="https://cdn-icons-png.flaticon.com/512/3242/3242142.png" class="w-10 h-10 bg-white rounded-full p-1 border-2 border-amber-400">
-                <div class="text-white">
-                    <h1 class="font-serif-islamic font-bold text-sm sm:text-base leading-tight tracking-wide">AL AZHAR MUNCAR</h1>
-                    <p class="text-amber-400 text-[9px] font-bold tracking-[0.2em] uppercase">Pondok Pesantren Modern</p>
-                </div>
-            </div>
-            <button onclick="toggleAdmin()" class="bg-amber-500 hover:bg-amber-600 text-emerald-950 px-4 py-2 rounded-lg text-[10px] font-black shadow-lg transition-all uppercase tracking-tighter">
-                ⚙️ Admin Panel
-            </button>
-        </div>
-    </nav>
-
-    <!-- HERO SECTION -->
-    <section class="hero-bg text-white pt-20 pb-32 text-center px-6">
-        <div class="hero-pattern"></div>
-        <div class="max-w-4xl mx-auto relative z-10">
-            <div class="inline-block px-4 py-2 rounded-full bg-emerald-800/60 border border-amber-400/30 text-amber-300 text-[10px] font-bold tracking-widest mb-10 uppercase">
-                ✨ Pendaftaran Santri Baru 2025/2026 Telah Dibuka
-            </div>
-            <h2 class="text-4xl sm:text-6xl lg:text-7xl font-bold font-serif-islamic mb-8 leading-[1.1] tracking-tight">
-                Selamat Datang di <br> <span class="text-amber-400">Al Azhar Muncar</span>
-            </h2>
-            <p id="view-subtitle" class="text-lg sm:text-xl text-emerald-100/90 mb-12 max-w-2xl mx-auto font-light leading-relaxed">
-                Membentuk karakter rabbani yang intelek dan berjiwa kepemimpinan untuk masa depan umat.
-            </p>
-            <div class="flex flex-col sm:flex-row justify-center gap-5">
-                <button onclick="toggleForm()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-12 py-5 rounded-2xl font-black text-sm shadow-2xl transition-all transform hover:scale-105 border-b-4 border-emerald-700">
-                    DAFTAR SANTRI SEKARANG
-                </button>
-                <a href="#" class="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-10 py-5 rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-2">
-                    Unduh Brosur PSB
+    <!-- 1. NAVBAR PERSIS DEMO -->
+    <header class="sticky top-0 z-50 bg-emerald-950/95 backdrop-blur-md border-b border-emerald-800 shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <!-- Logo & Brand -->
+                <a href="#" class="flex items-center gap-3.5 group">
+                    <div class="w-11 h-11 rounded-full bg-gradient-to-tr from-amber-500 to-amber-300 p-0.5 shadow-lg shadow-amber-950/30 flex items-center justify-center">
+                        <div class="w-full h-full bg-emerald-950 rounded-full flex items-center justify-center p-2">
+                            <!-- SVG Islamic Dome Crest -->
+                            <svg viewBox="0 0 48 48" fill="none" class="w-full h-full stroke-amber-400 stroke-2">
+                                <path d="M24 4 L24 10" stroke-linecap="round"/>
+                                <circle cx="24" cy="5" r="1.5" fill="#fbbf24"/>
+                                <path d="M24 10 C18 10 12 16 12 24 C12 32 16 35 16 42 L32 42 C32 35 36 32 36 24 C36 16 30 10 24 10 Z" fill="#064e3b" stroke="#f59e0b"/>
+                                <path d="M20 42 L20 33 C20 30.7 21.7 29 24 29 C26.3 29 28 30.7 28 33 L28 42" stroke="#fbbf24"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-base sm:text-lg font-bold font-serif-islamic tracking-wide text-white group-hover:text-amber-300 transition-colors">
+                                AL AZHAR MUNCAR
+                            </span>
+                        </div>
+                        <p class="text-[10px] tracking-widest uppercase font-semibold text-amber-400">
+                            Pondok Pesantren Modern • Banyuwangi
+                        </p>
+                    </div>
                 </a>
-            </div>
-        </div>
-    </section>
 
-    <!-- PROGRAM PENDIDIKAN -->
-    <section class="py-24 bg-white">
-        <div class="max-w-7xl mx-auto px-6 text-center">
-            <h3 class="text-3xl font-bold font-serif-islamic text-emerald-950 mb-4 uppercase tracking-wider">Program Pendidikan</h3>
-            <div class="h-1.5 w-20 bg-amber-500 mx-auto rounded-full mb-16"></div>
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="p-10 rounded-[2.5rem] bg-stone-50 border border-stone-200 hover:border-emerald-500 hover:shadow-2xl transition-all group">
-                    <div class="w-16 h-16 bg-emerald-100 text-emerald-700 rounded-2xl flex items-center justify-center mx-auto mb-6 text-2xl font-bold group-hover:bg-emerald-600 group-hover:text-white transition-colors">MI</div>
-                    <h4 class="text-xl font-bold text-emerald-950 mb-3">MI Al Azhar</h4>
-                    <p class="text-stone-500 text-sm leading-relaxed">Pendidikan dasar berbasis karakter dan tahfidz Al-Quran dini.</p>
-                </div>
-                <div class="p-10 rounded-[2.5rem] bg-stone-50 border border-stone-200 hover:border-emerald-500 hover:shadow-2xl transition-all group">
-                    <div class="w-16 h-16 bg-emerald-100 text-emerald-700 rounded-2xl flex items-center justify-center mx-auto mb-6 text-2xl font-bold group-hover:bg-emerald-600 group-hover:text-white transition-colors">MTs</div>
-                    <h4 class="text-xl font-bold text-emerald-950 mb-3">MTs Al Azhar</h4>
-                    <p class="text-stone-500 text-sm leading-relaxed">Pengembangan bilingual (Arab-Inggris) dan penguatan sains.</p>
-                </div>
-                <div class="p-10 rounded-[2.5rem] bg-stone-50 border border-stone-200 hover:border-emerald-500 hover:shadow-2xl transition-all group">
-                    <div class="w-16 h-16 bg-emerald-100 text-emerald-700 rounded-2xl flex items-center justify-center mx-auto mb-6 text-2xl font-bold group-hover:bg-emerald-600 group-hover:text-white transition-colors">MA</div>
-                    <h4 class="text-xl font-bold text-emerald-950 mb-3">MA Al Azhar</h4>
-                    <p class="text-stone-500 text-sm leading-relaxed">Persiapan akademik unggul menuju PTN dan Universitas Luar Negeri.</p>
+                <!-- Nav Menu Desktop -->
+                <nav class="hidden md:flex items-center gap-7 text-xs font-semibold uppercase tracking-wider text-emerald-100/80">
+                    <a href="#beranda" class="text-amber-400 font-bold transition-colors">Beranda</a>
+                    <a href="#sambutan" class="hover:text-amber-300 transition-colors">Profil</a>
+                    <a href="#program" class="hover:text-amber-300 transition-colors">Program</a>
+                    <a href="#fasilitas" class="hover:text-amber-300 transition-colors">Fasilitas</a>
+                    <a href="#biaya" class="hover:text-amber-300 transition-colors">Biaya</a>
+                    <a href="#kontak" class="hover:text-amber-300 transition-colors">Kontak</a>
+                </nav>
+
+                <!-- Action Buttons -->
+                <div class="flex items-center gap-3">
+                    <button onclick="openAdminModal()" class="px-3.5 py-2 rounded-lg bg-emerald-900/80 hover:bg-emerald-800 border border-emerald-700/60 text-emerald-200 text-xs font-bold transition-all flex items-center gap-1.5">
+                        <span>⚙️</span>
+                        <span class="hidden sm:inline">Admin No-Code</span>
+                    </button>
+                    <button onclick="openRegisterModal()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-emerald-950 font-bold text-xs shadow-lg shadow-amber-950/30 transition-all hover:scale-105">
+                        Daftar Santri
+                    </button>
                 </div>
             </div>
         </div>
-    </section>
+    </header>
 
-    <!-- MODAL ADMIN -->
-    <div id="admin-modal" class="modal">
-        <div class="bg-white w-full max-w-md rounded-3xl overflow-hidden shadow-2xl p-8">
-            <h3 class="text-xl font-bold text-emerald-950 mb-6 border-b pb-4">⚙️ Pengaturan Admin</h3>
-            <div class="space-y-5">
+    <main>
+        <!-- 2. HERO SECTION PERSIS DEMO -->
+        <section id="beranda" class="relative overflow-hidden bg-gradient-to-b from-emerald-950 via-emerald-900 to-emerald-950 text-white pt-12 pb-20 lg:pt-16 lg:pb-24">
+            <!-- Background Geometric Pattern -->
+            <div class="absolute inset-0 opacity-10 hero-pattern pointer-events-none"></div>
+            <div class="absolute -top-40 -right-40 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid lg:grid-cols-12 gap-12 items-center">
+                    <!-- Left: Headlines -->
+                    <div class="lg:col-span-7 space-y-6">
+                        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-800/80 border border-amber-400/30 text-amber-300 text-xs font-semibold tracking-wide shadow-sm">
+                            <span>✨</span>
+                            <span id="txt-tahun">PENERIMAAN SANTRI BARU (PSB) TAHUN AJARAN 2025/2026</span>
+                        </div>
+
+                        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white font-serif-islamic leading-[1.18]">
+                            Pondok Pesantren Modern <br />
+                            <span class="text-amber-400">Al Azhar Muncar</span> Banyuwangi
+                        </h1>
+
+                        <p class="text-base sm:text-lg text-emerald-100/90 leading-relaxed max-w-2xl font-light">
+                            Membentuk generasi pemimpin Qur'ani yang berakhlakul karimah, berwawasan global, menguasai ilmu agama dan sains teknologi, serta fasih dwibahasa Arab dan Inggris.
+                        </p>
+
+                        <!-- Registration Highlight Badge -->
+                        <div class="p-4 rounded-xl bg-emerald-800/40 border border-emerald-700/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-emerald-100">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></div>
+                                <span class="font-semibold text-amber-300">Gelombang I (Reguler & Beasiswa) Sedang Dibuka</span>
+                            </div>
+                            <div class="text-stone-300">
+                                Pendaftaran & Seleksi Berbasis Online & One-Day Service
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex flex-wrap items-center gap-4 pt-2">
+                            <button onclick="openRegisterModal()" class="flex items-center gap-2.5 px-6 py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-emerald-950 font-bold text-sm rounded-xl shadow-lg shadow-amber-900/30 transition-all hover:scale-[1.02]">
+                                <span>Daftar Santri Baru Sekarang</span>
+                                <span>→</span>
+                            </button>
+
+                            <button onclick="openRegisterModal()" class="flex items-center gap-2 px-5 py-3.5 bg-white/10 hover:bg-white/15 border border-white/20 text-white font-semibold text-sm rounded-xl transition-all">
+                                <span>📖</span>
+                                <span>Masuk Akun Santri</span>
+                            </button>
+                        </div>
+
+                        <div class="flex items-center gap-6 pt-3 text-xs text-emerald-200/80">
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-amber-400">✓</span>
+                                <span>Terakreditasi A Unggul</span>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-amber-400">✓</span>
+                                <span>Asrama Representatif</span>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-amber-400">✓</span>
+                                <span>Beasiswa Prestasi & Tahfidz</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Islamic Card Showcase -->
+                    <div class="lg:col-span-5">
+                        <div class="relative rounded-2xl bg-gradient-to-b from-emerald-800/80 to-emerald-900/90 border border-amber-500/30 p-6 sm:p-8 shadow-2xl backdrop-blur-sm">
+                            <div class="flex items-center justify-between border-b border-emerald-700/60 pb-5">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-emerald-950 p-2 border border-amber-400/50 flex items-center justify-center">
+                                        <span class="text-amber-400 text-lg">🕌</span>
+                                    </div>
+                                    <div>
+                                        <h2 class="text-base font-bold font-serif-islamic text-white">Al Azhar Muncar</h2>
+                                        <p class="text-xs text-amber-300">Pendidikan Islam Terpadu & Modern</p>
+                                    </div>
+                                </div>
+                                <span class="text-[11px] font-semibold tracking-wider uppercase px-2.5 py-1 rounded bg-amber-500/20 text-amber-300 border border-amber-400/30">
+                                    PSB Online
+                                </span>
+                            </div>
+
+                            <!-- Campus Photo Card -->
+                            <div class="my-6 rounded-xl overflow-hidden border border-emerald-800/80 bg-emerald-950/60 relative">
+                                <div class="relative h-48 w-full group">
+                                    <img id="img-hero-campus"
+                                        src="https://images.unsplash.com/photo-1590076215667-875d4ef2d7ee?w=1200&auto=format&fit=crop&q=80"
+                                        alt="Kampus Al Azhar Muncar"
+                                        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                    />
+                                    <div class="absolute inset-0 bg-gradient-to-t from-emerald-950/95 via-emerald-950/40 to-transparent flex flex-col justify-end p-4">
+                                        <p class="text-xs font-bold text-white font-serif-islamic">
+                                            Pusat Kader Ulama & Cendekiawan Muslim
+                                        </p>
+                                        <p class="text-[11px] text-amber-300">
+                                            Kampus Terpadu Sumberayu, Muncar, Banyuwangi
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Registration Steps -->
+                            <div class="space-y-2 text-xs">
+                                <div class="flex items-center justify-between p-2.5 rounded-lg bg-emerald-900/50 border border-emerald-800/50">
+                                    <span class="text-stone-300">1. Registrasi Akun Online</span>
+                                    <span class="text-amber-400 font-semibold">Cepat & Mudah</span>
+                                </div>
+                                <div class="flex items-center justify-between p-2.5 rounded-lg bg-emerald-900/50 border border-emerald-800/50">
+                                    <span class="text-stone-300">2. Isi Formulir & Upload Berkas</span>
+                                    <span class="text-amber-400 font-semibold">Tersimpan di Cloud</span>
+                                </div>
+                                <div class="flex items-center justify-between p-2.5 rounded-lg bg-emerald-900/50 border border-emerald-800/50">
+                                    <span class="text-stone-300">3. Unduh Kartu Ujian Seleksi</span>
+                                    <span class="text-amber-400 font-semibold">Otomatis Terbit</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4 Metrics Strip -->
+                <div class="mt-16 pt-8 border-t border-emerald-800/60 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                    <div class="p-4 rounded-xl bg-emerald-900/40 border border-emerald-800/60">
+                        <div class="text-2xl sm:text-3xl font-bold font-serif-islamic text-amber-400">1.450+</div>
+                        <p class="text-xs font-medium text-emerald-100 mt-1">Santri Putra & Putri Aktif</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-emerald-900/40 border border-emerald-800/60">
+                        <div class="text-2xl sm:text-3xl font-bold font-serif-islamic text-amber-400">320+</div>
+                        <p class="text-xs font-medium text-emerald-100 mt-1">Hafidz & Hafidzah Al-Quran</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-emerald-900/40 border border-emerald-800/60">
+                        <div class="text-2xl sm:text-3xl font-bold font-serif-islamic text-amber-400">45+</div>
+                        <p class="text-xs font-medium text-emerald-100 mt-1">Juara Sains & Bahasa 2024</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-emerald-900/40 border border-emerald-800/60">
+                        <div class="text-2xl sm:text-3xl font-bold font-serif-islamic text-amber-400">100%</div>
+                        <p class="text-xs font-medium text-emerald-100 mt-1">Lulusan Diterima PTN & Al-Azhar</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. SAMBUTAN PIMPINAN PERSIS DEMO -->
+        <section id="sambutan" class="py-20 bg-stone-100/70 border-b border-stone-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid lg:grid-cols-12 gap-12 items-center">
+                    <div class="lg:col-span-5 flex justify-center">
+                        <div class="relative w-full max-w-sm">
+                            <div class="absolute -inset-3 bg-gradient-to-tr from-amber-500/20 to-emerald-800/20 rounded-3xl blur-lg"></div>
+                            <div class="relative rounded-2xl overflow-hidden border-4 border-amber-400/40 shadow-2xl bg-white">
+                                <img id="img-kyai"
+                                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&auto=format&fit=crop&q=80"
+                                    alt="KH. Dr. Ahmad Mukhlis, Lc., M.A."
+                                    class="w-full h-96 object-cover object-top"
+                                />
+                                <div class="p-4 bg-emerald-950 text-white text-center">
+                                    <h3 class="font-bold font-serif-islamic text-base text-amber-300">KH. Dr. Ahmad Mukhlis, Lc., M.A.</h3>
+                                    <p class="text-[11px] text-emerald-200/80">Pengasuh & Pimpinan Pondok Pesantren Modern Al Azhar</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-7 space-y-5">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-800 text-xs font-bold uppercase tracking-wider">
+                            KATA SAMBUTAN PIMPINAN
+                        </div>
+                        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold font-serif-islamic text-emerald-950 leading-tight">
+                            Menyiapkan Generasi Khaira Ummah Berakhlak Mulia & Berwawasan Global
+                        </h2>
+                        <p class="text-sm sm:text-base text-stone-700 leading-relaxed italic">
+                            "Bismillahirrohmanirrohim. Selamat datang para wali santri dan calon generasi emas umat. Pesantren Modern Al Azhar Muncar hadir sebagai kawah candradimuka yang memadukan kedalaman ilmu salaf dengan keunggulan sains dan bahasa internasional."
+                        </p>
+                        <p class="text-sm text-stone-600 leading-relaxed">
+                            Kami mendidik santri dengan pendekatan holistik: penguatan tahfidz Al-Quran 30 Juz, pembiasaan bahasa Arab dan Inggris aktif 24 jam, serta kurikulum sains modern guna mencetak lulusan yang siap memimpin di kancah nasional maupun dunia.
+                        </p>
+                        <div class="grid grid-cols-2 gap-4 pt-2 text-xs font-semibold text-emerald-900">
+                            <div class="p-3 bg-white rounded-xl border border-emerald-100 flex items-center gap-2">
+                                <span class="text-amber-500 font-bold">★</span> Akidah & Karakter Salafus Shalih
+                            </div>
+                            <div class="p-3 bg-white rounded-xl border border-emerald-100 flex items-center gap-2">
+                                <span class="text-amber-500 font-bold">★</span> Fasih Bilingual (Arab & Inggris)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. PROGRAM PENDIDIKAN PERSIS DEMO -->
+        <section id="program" class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-14">
+                    <span class="text-xs font-bold text-amber-600 uppercase tracking-widest">JENJANG PENDIDIKAN</span>
+                    <h2 class="text-3xl sm:text-4xl font-bold font-serif-islamic text-emerald-950 mt-2">
+                        Program Pendidikan Terpadu
+                    </h2>
+                    <p class="text-stone-600 text-sm mt-3">
+                        Pilihan kurikulum terakreditasi unggul yang dirancang untuk potensi maksimal setiap santri.
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- SMP -->
+                    <div class="rounded-2xl border border-stone-200 overflow-hidden bg-stone-50 hover:shadow-xl transition-all group flex flex-col justify-between">
+                        <div>
+                            <div class="h-44 overflow-hidden relative">
+                                <img src="https://images.unsplash.com/photo-1577896851231-70ef18881754?w=800&auto=format&fit=crop&q=80" alt="SMP Islam Modern" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                <span class="absolute top-3 left-3 bg-emerald-900 text-amber-300 text-[10px] font-bold px-2.5 py-1 rounded-md uppercase">3 Tahun</span>
+                            </div>
+                            <div class="p-5">
+                                <h3 class="font-bold text-lg font-serif-islamic text-emerald-950">SMP Islam Modern</h3>
+                                <p class="text-xs text-stone-600 mt-2 leading-relaxed">Memadukan kurikulum Diknas dengan kurikulum kepesantrenan dan bilingual active.</p>
+                            </div>
+                        </div>
+                        <div class="p-5 pt-0">
+                            <button onclick="openRegisterModal()" class="w-full py-2.5 bg-emerald-800 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-all">Daftar SMP</button>
+                        </div>
+                    </div>
+
+                    <!-- SMA -->
+                    <div class="rounded-2xl border border-stone-200 overflow-hidden bg-stone-50 hover:shadow-xl transition-all group flex flex-col justify-between">
+                        <div>
+                            <div class="h-44 overflow-hidden relative">
+                                <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&auto=format&fit=crop&q=80" alt="SMA Islam Modern" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                <span class="absolute top-3 left-3 bg-emerald-900 text-amber-300 text-[10px] font-bold px-2.5 py-1 rounded-md uppercase">3 Tahun</span>
+                            </div>
+                            <div class="p-5">
+                                <h3 class="font-bold text-lg font-serif-islamic text-emerald-950">SMA Islam Modern</h3>
+                                <p class="text-xs text-stone-600 mt-2 leading-relaxed">Fokus persiapan tembus PTN favorit (SNBP/SNBT) serta studi ke Al-Azhar Kairo & Timur Tengah.</p>
+                            </div>
+                        </div>
+                        <div class="p-5 pt-0">
+                            <button onclick="openRegisterModal()" class="w-full py-2.5 bg-emerald-800 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-all">Daftar SMA</button>
+                        </div>
+                    </div>
+
+                    <!-- TAHFIDZ -->
+                    <div class="rounded-2xl border border-amber-300/80 overflow-hidden bg-amber-50/30 hover:shadow-xl transition-all group flex flex-col justify-between">
+                        <div>
+                            <div class="h-44 overflow-hidden relative">
+                                <img src="https://images.unsplash.com/photo-1609599006353-e629aaabfeae?w=800&auto=format&fit=crop&q=80" alt="Tahfidz" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                <span class="absolute top-3 left-3 bg-amber-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-md uppercase">Program Unggulan</span>
+                            </div>
+                            <div class="p-5">
+                                <h3 class="font-bold text-lg font-serif-islamic text-emerald-950">Tahfidz Al-Quran 30 Juz</h3>
+                                <p class="text-xs text-stone-600 mt-2 leading-relaxed">Bimbingan intensif bersanad muttashil, tajwid tahsin standar internasional, dan target mutqin.</p>
+                            </div>
+                        </div>
+                        <div class="p-5 pt-0">
+                            <button onclick="openRegisterModal()" class="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl transition-all">Daftar Tahfidz</button>
+                        </div>
+                    </div>
+
+                    <!-- REGULER -->
+                    <div class="rounded-2xl border border-stone-200 overflow-hidden bg-stone-50 hover:shadow-xl transition-all group flex flex-col justify-between">
+                        <div>
+                            <div class="h-44 overflow-hidden relative">
+                                <img src="https://images.unsplash.com/photo-1584697964190-7bb88e999c0d?w=800&auto=format&fit=crop&q=80" alt="Kulliyatul Muallimin" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                <span class="absolute top-3 left-3 bg-emerald-900 text-amber-300 text-[10px] font-bold px-2.5 py-1 rounded-md uppercase">Pesantren Penuh</span>
+                            </div>
+                            <div class="p-5">
+                                <h3 class="font-bold text-lg font-serif-islamic text-emerald-950">KMI / Dirosah Islamiyah</h3>
+                                <p class="text-xs text-stone-600 mt-2 leading-relaxed">Kajian kitab kuning turats salaf, ilmu fiqih, ushul fiqih, nahwu sharaf, dan pembentukan da'i.</p>
+                            </div>
+                        </div>
+                        <div class="p-5 pt-0">
+                            <button onclick="openRegisterModal()" class="w-full py-2.5 bg-emerald-800 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-all">Daftar KMI</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. FASILITAS PERSIS DEMO -->
+        <section id="fasilitas" class="py-20 bg-stone-100/60">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-14">
+                    <span class="text-xs font-bold text-amber-600 uppercase tracking-widest">SARANA PRASARANA</span>
+                    <h2 class="text-3xl sm:text-4xl font-bold font-serif-islamic text-emerald-950 mt-2">
+                        Fasilitas Representatif & Asri
+                    </h2>
+                </div>
+
+                <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="rounded-2xl overflow-hidden bg-white border border-stone-200 shadow-sm">
+                        <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&auto=format&fit=crop&q=80" class="h-48 w-full object-cover">
+                        <div class="p-4">
+                            <h4 class="font-bold text-sm text-emerald-950">Masjid Jami' 3 Lantai</h4>
+                            <p class="text-xs text-stone-500 mt-1">Pusat ibadah, sholat berjamaah, dan halaqah Al-Quran.</p>
+                        </div>
+                    </div>
+                    <div class="rounded-2xl overflow-hidden bg-white border border-stone-200 shadow-sm">
+                        <img src="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=800&auto=format&fit=crop&q=80" class="h-48 w-full object-cover">
+                        <div class="p-4">
+                            <h4 class="font-bold text-sm text-emerald-950">Gedung Asrama Ber-AC</h4>
+                            <p class="text-xs text-stone-500 mt-1">Hunian santri yang bersih, tertib, dan diawasi musyrif 24 jam.</p>
+                        </div>
+                    </div>
+                    <div class="rounded-2xl overflow-hidden bg-white border border-stone-200 shadow-sm">
+                        <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&auto=format&fit=crop&q=80" class="h-48 w-full object-cover">
+                        <div class="p-4">
+                            <h4 class="font-bold text-sm text-emerald-950">Laboratorium Sains & IT</h4>
+                            <p class="text-xs text-stone-500 mt-1">Komputer multimedia modern untuk riset sains dan coding.</p>
+                        </div>
+                    </div>
+                    <div class="rounded-2xl overflow-hidden bg-white border border-stone-200 shadow-sm">
+                        <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&auto=format&fit=crop&q=80" class="h-48 w-full object-cover">
+                        <div class="p-4">
+                            <h4 class="font-bold text-sm text-emerald-950">Sarana Olahraga Lengkap</h4>
+                            <p class="text-xs text-stone-500 mt-1">Lapangan futsal, badminton, memanah, dan bela diri tapak suci.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. ALUR & BIAYA PERSIS DEMO -->
+        <section id="biaya" class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-14">
+                    <span class="text-xs font-bold text-amber-600 uppercase tracking-widest">TRANSPARAN & TERJANGKAU</span>
+                    <h2 class="text-3xl sm:text-4xl font-bold font-serif-islamic text-emerald-950 mt-2">
+                        Rincian Biaya Pendidikan
+                    </h2>
+                </div>
+
+                <div class="max-w-4xl mx-auto bg-stone-50 rounded-2xl border border-stone-200 p-6 sm:p-8">
+                    <div class="divide-y divide-stone-200">
+                        <div class="py-4 flex justify-between items-center">
+                            <div>
+                                <h4 class="font-bold text-emerald-950 text-sm">Infaq Pembangunan & Fasilitas Asrama</h4>
+                                <p class="text-xs text-stone-500">Dibayar sekali selama masa pendidikan (dapat diangsur 3x)</p>
+                            </div>
+                            <span class="font-bold font-serif-islamic text-emerald-900 text-base">Rp 4.500.000</span>
+                        </div>
+                        <div class="py-4 flex justify-between items-center">
+                            <div>
+                                <h4 class="font-bold text-emerald-950 text-sm">Seragam Lengkap & Atribut (5 Stel)</h4>
+                                <p class="text-xs text-stone-500">Seragam pondok, batik, jubah, pramuka, dan olahraga</p>
+                            </div>
+                            <span class="font-bold font-serif-islamic text-emerald-900 text-base">Rp 1.250.000</span>
+                        </div>
+                        <div class="py-4 flex justify-between items-center">
+                            <div>
+                                <h4 class="font-bold text-emerald-950 text-sm">SPP Bulanan, Makan 3x Sehari & Laundry</h4>
+                                <p class="text-xs text-stone-500">Konsumsi gizi seimbang 3x/hari, asrama, listrik, laundry pakaian</p>
+                            </div>
+                            <span class="font-bold font-serif-islamic text-emerald-900 text-base">Rp 950.000 / bln</span>
+                        </div>
+                        <div class="py-4 flex justify-between items-center">
+                            <div>
+                                <h4 class="font-bold text-emerald-950 text-sm">Buku Paket, Kitab & Modul Tahfidz</h4>
+                                <p class="text-xs text-stone-500">Kitab kuning dasar, modul tajwid, waqaf Al-Quran</p>
+                            </div>
+                            <span class="font-bold font-serif-islamic text-emerald-900 text-base">Rp 600.000</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 p-4 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 flex items-center justify-between">
+                        <span>💡 Tersedia beasiswa penuh bagi santri berprestasi & yatim piatu dhuafa.</span>
+                        <button onclick="openRegisterModal()" class="px-4 py-2 bg-emerald-800 text-white font-bold rounded-lg hover:bg-emerald-700">Daftar Beasiswa</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. KONTAK & LOKASI PERSIS DEMO -->
+        <section id="kontak" class="py-16 bg-emerald-950 text-white border-t border-emerald-900">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div>
+                        <h4 class="text-lg font-bold font-serif-islamic text-amber-400 mb-3">PONDOK PESANTREN MODERN AL AZHAR</h4>
+                        <p class="text-xs text-emerald-100/80 leading-relaxed">
+                            Mencetak kader ulama amilin, imam muttakin, dan intelektual muslim berakhlak mulia.
+                        </p>
+                    </div>
+                    <div>
+                        <h5 class="text-sm font-bold text-white uppercase tracking-wider mb-3">Alamat Kampus</h5>
+                        <p class="text-xs text-emerald-100/80 leading-relaxed">
+                            Jl. KH. Abdul Mannan No. 09, Sumberayu, Muncar, Kabupaten Banyuwangi, Jawa Timur 68472
+                        </p>
+                    </div>
+                    <div>
+                        <h5 class="text-sm font-bold text-white uppercase tracking-wider mb-3">Layanan Informasi PSB</h5>
+                        <p class="text-xs text-emerald-100/80">WhatsApp Panitia: <span id="txt-wa" class="font-bold text-amber-400">081234567890</span></p>
+                        <p class="text-xs text-emerald-100/80 mt-1">Email Resmi: psb@alazhar-muncar.sch.id</p>
+                    </div>
+                </div>
+
+                <div class="mt-12 pt-6 border-t border-emerald-900 text-center text-xs text-emerald-200/60">
+                    © 2025 Pondok Pesantren Modern Al Azhar Muncar Banyuwangi. Seluruh Hak Cipta Dilindungi.
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- MODAL 1: FORM PENDAFTARAN SANTRI (TERKONEKSI GOOGLE SHEETS) -->
+    <div id="modal-register" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white w-full max-w-xl rounded-3xl overflow-hidden shadow-2xl relative my-8">
+            <div class="bg-emerald-900 p-6 text-white flex justify-between items-center">
                 <div>
-                    <label class="block text-[10px] font-bold text-stone-400 uppercase mb-2">URL Logo Pesantren</label>
-                    <input type="text" id="input-logo" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl text-xs" placeholder="https://...">
+                    <h3 class="font-bold font-serif-islamic text-lg text-amber-300">Formulir Pendaftaran PSB Online</h3>
+                    <p class="text-xs text-emerald-100">Lengkapi data santri baru secara valid</p>
                 </div>
-                <div>
-                    <label class="block text-[10px] font-bold text-stone-400 uppercase mb-2">Subtitle Hero Section</label>
-                    <textarea id="input-subtitle" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl text-xs" rows="3"></textarea>
-                </div>
-                <div class="p-4 bg-amber-50 border border-amber-200 rounded-2xl">
-                    <label class="block text-[10px] font-bold text-amber-700 uppercase mb-2">Google Script URL (Cloud Database)</label>
-                    <input type="text" id="input-script" class="w-full p-3 bg-white border border-amber-300 rounded-xl text-xs" placeholder="Paste URL Apps Script Anda...">
-                </div>
-                <div class="flex gap-3">
-                    <button onclick="toggleAdmin()" class="flex-1 py-3 border border-stone-200 text-stone-500 font-bold rounded-xl text-sm">Batal</button>
-                    <button onclick="saveSettings()" class="flex-1 py-3 bg-emerald-600 text-white font-bold rounded-xl text-sm shadow-lg">Simpan</button>
-                </div>
+                <button onclick="closeRegisterModal()" class="text-white/70 hover:text-white text-xl">✕</button>
             </div>
-        </div>
-    </div>
 
-    <!-- MODAL FORM -->
-    <div id="form-modal" class="modal">
-        <div class="bg-white w-full max-w-lg rounded-[2rem] overflow-hidden shadow-2xl relative">
-            <div class="bg-emerald-600 p-8 text-white">
-                <h3 class="text-2xl font-bold font-serif-islamic">Formulir Pendaftaran</h3>
-                <p class="text-emerald-100 text-xs mt-1">Lengkapi data untuk mendaftar sebagai santri baru.</p>
-                <button onclick="toggleForm()" class="absolute top-8 right-8 text-white/50 hover:text-white">✕</button>
-            </div>
-            <form id="regForm" onsubmit="submitForm(event)" class="p-8 space-y-6">
-                <div class="space-y-4">
-                    <input type="text" name="nama" placeholder="Nama Lengkap Santri" required class="w-full p-4 bg-stone-50 border border-stone-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all">
-                    <input type="text" name="wa" placeholder="Nomor WhatsApp Wali (0812...)" required class="w-full p-4 bg-stone-50 border border-stone-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all">
-                    <input type="text" name="sekolah" placeholder="Asal Sekolah (SD/MI)" required class="w-full p-4 bg-stone-50 border border-stone-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all">
-                    <select name="jenjang" class="w-full p-4 bg-stone-50 border border-stone-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all">
-                        <option>MI Al Azhar</option>
-                        <option>MTs Al Azhar</option>
-                        <option>MA Al Azhar</option>
-                    </select>
+            <form id="form-pendaftaran" onsubmit="handleFormSubmit(event)" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-stone-700 uppercase mb-1">Nama Lengkap Santri</label>
+                    <input type="text" name="namaLengkap" required placeholder="Sesuai Akta Kelahiran" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500 outline-none">
                 </div>
-                <button type="submit" id="btn-submit" class="w-full py-5 bg-emerald-600 text-white font-black rounded-2xl shadow-xl hover:bg-emerald-700 transition-all uppercase tracking-widest text-sm">
-                    KIRIM PENDAFTARAN
-                </button>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-stone-700 uppercase mb-1">Nomor WhatsApp Wali</label>
+                        <input type="text" name="phone" required placeholder="081234567890" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-stone-700 uppercase mb-1">Pilihan Program</label>
+                        <select name="program" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500 outline-none">
+                            <option>SMP Islam Modern</option>
+                            <option>SMA Islam Modern</option>
+                            <option>Program Tahfidz Al-Quran</option>
+                            <option>Program Reguler / KMI</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-stone-700 uppercase mb-1">Asal Sekolah</label>
+                        <input type="text" name="asalSekolah" required placeholder="Nama SD / MI asal" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-stone-700 uppercase mb-1">Kota / Kabupaten</label>
+                        <input type="text" name="kabupaten" required placeholder="Banyuwangi" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500 outline-none">
+                    </div>
+                </div>
+
+                <div class="pt-3">
+                    <button type="submit" id="btn-daftar-submit" class="w-full py-4 bg-gradient-to-r from-emerald-700 to-emerald-800 hover:from-emerald-800 hover:to-emerald-900 text-white font-bold rounded-xl shadow-lg transition-all text-sm uppercase tracking-wider">
+                        Kirim Pendaftaran & Simpan ke Cloud
+                    </button>
+                </div>
             </form>
         </div>
     </div>
 
+    <!-- MODAL 2: PANEL ADMIN NO-CODE GAMBAR & SPREADSHEET -->
+    <div id="modal-admin" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl relative my-8">
+            <div class="bg-emerald-950 p-6 text-white flex justify-between items-center border-b border-emerald-800">
+                <div class="flex items-center gap-2">
+                    <span class="text-xl">⚙️</span>
+                    <div>
+                        <h3 class="font-bold font-serif-islamic text-base text-amber-300">Panel Admin No-Code</h3>
+                        <p class="text-[11px] text-emerald-200">Ubah Gambar & Sambungkan Spreadsheet Langsung</p>
+                    </div>
+                </div>
+                <button onclick="closeAdminModal()" class="text-white/70 hover:text-white text-xl">✕</button>
+            </div>
+
+            <div class="p-6 space-y-4 text-xs">
+                <div>
+                    <label class="block font-bold text-stone-700 uppercase mb-1">URL Gambar Kampus (Hero Section)</label>
+                    <input type="text" id="cfg-hero" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-stone-700 uppercase mb-1">URL Foto Kyai / Pimpinan Pondok</label>
+                    <input type="text" id="cfg-kyai" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-stone-700 uppercase mb-1">No WhatsApp Panitia PSB</label>
+                    <input type="text" id="cfg-wa" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+
+                <div class="p-4 bg-emerald-50 rounded-2xl border border-emerald-200 space-y-2">
+                    <label class="block font-bold text-emerald-900 uppercase">Google Apps Script Web App URL</label>
+                    <input type="text" id="cfg-script" placeholder="https://script.google.com/macros/s/.../exec" class="w-full p-3 bg-white border border-emerald-300 rounded-xl text-xs outline-none focus:ring-2 focus:ring-emerald-500">
+                    <p class="text-[10px] text-emerald-700 leading-tight">
+                        *Salin URL Web App dari deployment Google Apps Script Anda. Formulir akan otomatis terkirim ke Google Sheets!
+                    </p>
+                </div>
+
+                <div class="flex gap-3 pt-2">
+                    <button onclick="closeAdminModal()" class="flex-1 py-3 border border-stone-200 rounded-xl font-bold text-stone-600">Tutup</button>
+                    <button onclick="saveAdminConfig()" class="flex-1 py-3 bg-amber-500 hover:bg-amber-600 text-emerald-950 font-black rounded-xl shadow-lg transition-all">SIMPAN PENGATURAN</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC LENGKAP -->
     <script>
-        // --- LOGIC PENGATURAN ---
-        const config = JSON.parse(localStorage.getItem('psb_config')) || {
-            logo: 'https://cdn-icons-png.flaticon.com/512/3242/3242142.png',
-            subtitle: 'Membentuk karakter rabbani yang intelek dan berjiwa kepemimpinan untuk masa depan umat.',
-            scriptUrl: ''
+        const DEFAULT_CONFIG = {
+            heroCampusImage: 'https://images.unsplash.com/photo-1590076215667-875d4ef2d7ee?w=1200&auto=format&fit=crop&q=80',
+            kyaiPortraitImage: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&auto=format&fit=crop&q=80',
+            waPanitia: '081234567890',
+            appsScriptUrl: ''
         };
 
-        // Load awal
-        function init() {
-            document.getElementById('view-logo').src = config.logo;
-            document.getElementById('view-subtitle').innerText = config.subtitle;
-            document.getElementById('input-logo').value = config.logo;
-            document.getElementById('input-subtitle').value = config.subtitle;
-            document.getElementById('input-script').value = config.scriptUrl;
-        }
-        init();
-
-        function toggleAdmin() { document.getElementById('admin-modal').classList.toggle('active'); }
-        function toggleForm() { document.getElementById('form-modal').classList.toggle('active'); }
-
-        function saveSettings() {
-            config.logo = document.getElementById('input-logo').value;
-            config.subtitle = document.getElementById('input-subtitle').value;
-            config.scriptUrl = document.getElementById('input-script').value;
-            localStorage.setItem('psb_config', JSON.stringify(config));
-            alert('✅ Berhasil Disimpan!');
-            window.location.reload();
-        }
-
-        async function submitForm(e) {
-            e.preventDefault();
-            if (!config.scriptUrl) return alert('⚠️ Harap isi URL Google Script di Panel Admin terlebih dahulu!');
-            
-            const btn = document.getElementById('btn-submit');
-            btn.disabled = true; btn.innerText = 'MENGIRIM...';
-            
-            const formData = new FormData(e.target);
-            const data = Object.fromEntries(formData.entries());
-
+        function getConfig() {
             try {
-                await fetch(config.scriptUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
-                alert('🎉 ALHAMDULILLAH! Pendaftaran berhasil terkirim. Panitia akan menghubungi Anda segera.');
-                toggleForm();
-                e.target.reset();
-            } catch (err) {
-                alert('❌ Gagal mengirim data. Cek URL Script Anda.');
-            } finally {
-                btn.disabled = false; btn.innerText = 'KIRIM PENDAFTARAN';
+                const stored = localStorage.getItem('psb_alazhar_cfg');
+                return stored ? JSON.parse(stored) : DEFAULT_CONFIG;
+            } catch(e) {
+                return DEFAULT_CONFIG;
             }
         }
+
+        function applyConfig() {
+            const cfg = getConfig();
+            if (cfg.heroCampusImage) document.getElementById('img-hero-campus').src = cfg.heroCampusImage;
+            if (cfg.kyaiPortraitImage) document.getElementById('img-kyai').src = cfg.kyaiPortraitImage;
+            if (cfg.waPanitia) document.getElementById('txt-wa').innerText = cfg.waPanitia;
+            
+            document.getElementById('cfg-hero').value = cfg.heroCampusImage || '';
+            document.getElementById('cfg-kyai').value = cfg.kyaiPortraitImage || '';
+            document.getElementById('cfg-wa').value = cfg.waPanitia || '';
+            document.getElementById('cfg-script').value = cfg.appsScriptUrl || '';
+        }
+
+        function saveAdminConfig() {
+            const cfg = {
+                heroCampusImage: document.getElementById('cfg-hero').value.trim() || DEFAULT_CONFIG.heroCampusImage,
+                kyaiPortraitImage: document.getElementById('cfg-kyai').value.trim() || DEFAULT_CONFIG.kyaiPortraitImage,
+                waPanitia: document.getElementById('cfg-wa').value.trim() || DEFAULT_CONFIG.waPanitia,
+                appsScriptUrl: document.getElementById('cfg-script').value.trim()
+            };
+            localStorage.setItem('psb_alazhar_cfg', JSON.stringify(cfg));
+            applyConfig();
+            alert('✅ Pengaturan gambar & Spreadsheet berhasil disimpan!');
+            closeAdminModal();
+        }
+
+        // Modal Controls
+        function openRegisterModal() {
+            document.getElementById('modal-register').classList.add('modal-active');
+        }
+        function closeRegisterModal() {
+            document.getElementById('modal-register').classList.remove('modal-active');
+        }
+        function openAdminModal() {
+            document.getElementById('modal-admin').classList.add('modal-active');
+        }
+        function closeAdminModal() {
+            document.getElementById('modal-admin').classList.remove('modal-active');
+        }
+
+        // Handle Submission to Google Apps Script Cloud
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-daftar-submit');
+            const cfg = getConfig();
+
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            data.tanggalDaftar = new Date().toISOString().slice(0, 10);
+            data.nomorPendaftaran = 'AZH-' + Date.now().toString().slice(-6);
+
+            btn.disabled = true;
+            btn.innerText = 'Mengirim data ke database...';
+
+            if (cfg.appsScriptUrl) {
+                try {
+                    await fetch(cfg.appsScriptUrl, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'DAFTAR_SANTRI', data: data })
+                    });
+                } catch(err) {
+                    console.log('Sync cloud error:', err);
+                }
+            }
+
+            alert('🎉 ALHAMDULILLAH! Pendaftaran Santri Baru Berhasil.\n\nNomor Pendaftaran: ' + data.nomorPendaftaran + '\nPanitia akan segera menghubungi nomor WA Anda.');
+            e.target.reset();
+            closeRegisterModal();
+            btn.disabled = false;
+            btn.innerText = 'Kirim Pendaftaran & Simpan ke Cloud';
+        }
+
+        // Run on load
+        applyConfig();
     </script>
 </body>
 </html>
