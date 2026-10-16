@@ -173,14 +173,14 @@ function home(){A.innerHTML=`
 <section class="alt"><div class="wrap"><h2>Pertanyaan umum</h2><br>
 <details><summary>Bagaimana cara mendaftar?</summary><p>Buat akun, lengkapi formulir di dashboard, lalu tunggu verifikasi panitia.</p></details>
 <details><summary>Bagaimana melihat hasil seleksi?</summary><p>Buka halaman Pengumuman, lalu cari dengan nomor pendaftaran, NIK, atau nama lengkap.</p></details>
-<details><summary>Bagaimana cara daftar ulang?</summary><p>Setelah dinyatakan diterima, masuk ke dashboard, buka bagian Daftar ulang, transfer sesuai petunjuk, lalu unggah bukti pembayaran. Panitia akan memverifikasinya.</p></details><details><summary>Lupa kata sandi?</summary><p>Hubungi panitia PSB agar kata sandi Anda diatur ulang.</p></details></div></section>`}
+<details><summary>Bagaimana cara daftar ulang?</summary><p>Setelah dinyatakan diterima, masuk ke dashboard, buka bagian Daftar ulang, transfer sesuai petunjuk, lalu unggah bukti pembayaran. Panitia akan memverifikasinya.</p></details><details><summary>Lupa kata sandi?</summary><p>Di halaman Masuk, klik Lupa kata sandi, masukkan email akun Anda, lalu isi kode 6 digit yang dikirim ke email tersebut dan buat kata sandi baru.</p></details></div></section>`}
 
 function authView(mode){const r=mode==='daftar';A.innerHTML=`<div class="wrap"><form class="card" id="f"><img src="${LOGO}" alt="Logo PPM Al Azhar Muncar" width="76" height="76" style="display:block;margin:0 auto 14px"><h2 style="text-align:center">${r?'Buat akun calon santri':'Masuk'}</h2><br>
 ${r?'<label for="nama">Nama lengkap calon santri</label><input id="nama" required><br><br>':''}
 <label for="email">Email</label><input id="email" type="email" required><br><br>
 <label for="pw">Kata sandi${r?' (minimal 8 karakter)':''}</label><input id="pw" type="password" required>
 <br><br><button class="btn g" id="go">${r?'Buat akun':'Masuk'}</button><div class="msg" id="msg" role="alert"></div>
-<p style="font-size:14px;color:var(--mute)">${r?'Sudah punya akun? <a href="#/masuk">Masuk</a>':'Belum punya akun? <a href="#/daftar">Daftar</a>'}</p></form></div>`;
+<p style="font-size:14px;color:var(--mute)">${r?'Sudah punya akun? <a href="#/masuk">Masuk</a>':'<a href="#/lupa">Lupa kata sandi?</a><br>Belum punya akun? <a href="#/daftar">Daftar</a>'}</p></form></div>`;
  $('#f').onsubmit=async e=>{e.preventDefault();$('#go').disabled=true;say('Memproses…');
   try{S=r?await run('daftarAkun',{nama:$('#nama').value,email:$('#email').value,pw:$('#pw').value}):await run('login',$('#email').value,$('#pw').value);
    location.hash=S.role==='santri'?'#/dashboard':'#/panel'}catch(x){say(x.message,true);$('#go').disabled=false}}}
@@ -264,6 +264,20 @@ async function bayarView(){if(!S||S.role==='santri')return location.hash='#/masu
  <div class="tw"><table><tr><th>No</th><th>Nama</th><th>Program</th><th>WhatsApp wali</th></tr>${r.belum.length?r.belum.map(x=>`<tr><td>${esc(x.no)}</td><td>${esc(x.nama)}</td><td>${esc(x.program)}</td><td>${wa(x.hp)}</td></tr>`).join(''):'<tr><td colspan="4">Semua peserta yang diterima sudah mengirim bukti.</td></tr>'}</table></div></div></div>`;
  A.querySelectorAll('.lb').forEach(b=>b.onclick=()=>bkView(b.closest('tr').dataset.id,$('#bv'),'lihatBukti'));
  A.querySelectorAll('.sv').forEach(b=>b.onclick=async()=>{const tr=b.closest('tr');b.disabled=true;try{await run('verifikasiPembayaran',S.token,tr.dataset.no,tr.querySelector('.st').value,tr.querySelector('.ct').value);say('Tersimpan: '+tr.dataset.no);setTimeout(bayarView,900)}catch(x){say(x.message,true);b.disabled=false}})}
+
+function lupaView(){
+ A.innerHTML=`<div class="wrap"><div class="card"><img src="${LOGO}" alt="Logo PPM Al Azhar Muncar" width="76" height="76" style="display:block;margin:0 auto 14px"><h2 style="text-align:center">Lupa kata sandi</h2><br>
+ <form id="l1"><p style="font-size:14px;color:var(--mute);margin-top:0">Masukkan email akun Anda. Kode verifikasi 6 digit akan dikirim ke email tersebut.</p><label for="le">Email</label><input id="le" type="email" autocomplete="email" required><br><br><button class="btn g" id="lb1">Kirim kode</button></form>
+ <form id="l2" hidden><p style="font-size:14px;color:var(--mute);margin-top:0" id="lp"></p><label for="lk">Kode verifikasi (6 digit)</label><input id="lk" inputmode="numeric" maxlength="6" autocomplete="one-time-code" required><br><br><label for="ln">Kata sandi baru (minimal 8 karakter)</label><input id="ln" type="password" autocomplete="new-password" required><br><br><label for="lu">Ulangi kata sandi baru</label><input id="lu" type="password" autocomplete="new-password" required><br><br><button class="btn g" id="lb2">Atur ulang kata sandi</button> <button type="button" class="btn s" id="lr">Kirim ulang kode</button></form>
+ <div class="msg" id="msg" role="alert"></div><p style="font-size:14px"><a href="#/masuk">Kembali ke halaman masuk</a></p></div></div>`;
+ let em='';
+ const kirim=async b=>{em=$('#le').value.trim();if(!em)return say('Isi email Anda.',true);b.disabled=true;say('Mengirim kode…');
+  try{const r=await run('lupaSandi',em);say(r.pesan);$('#l1').hidden=true;$('#l2').hidden=false;$('#lp').textContent='Kode dikirim ke '+em+' (jika email terdaftar).';$('#lk').focus()}catch(x){say(x.message,true)}b.disabled=false};
+ $('#l1').onsubmit=e=>{e.preventDefault();kirim($('#lb1'))};
+ $('#lr').onclick=()=>kirim($('#lr'));
+ $('#l2').onsubmit=async e=>{e.preventDefault();if($('#ln').value!==$('#lu').value)return say('Kata sandi baru tidak sama.',true);
+  const b=$('#lb2');b.disabled=true;say('Memproses…');
+  try{await run('resetSandiDenganKode',em,$('#lk').value.trim(),$('#ln').value);say('Kata sandi berhasil diubah. Mengalihkan ke halaman masuk…');setTimeout(()=>{location.hash='#/masuk'},1800)}catch(x){say(x.message,true);b.disabled=false}}}
 async function dash(){if(!S||S.role!=='santri')return location.hash='#/masuk';A.innerHTML='<div class="wrap"><p class="card">Memuat…</p></div>';
  let d;try{d=await run('dataSaya',S.token)}catch(x){S=null;return location.hash='#/masuk'}
  const pct=Math.round(REQ.filter(k=>d[KEY[k]]).length/REQ.length*100);
@@ -307,6 +321,6 @@ function umum(){A.innerHTML=`<div class="wrap"><form class="card" id="f"><h2>Pen
   try{const r=await run('cariPengumuman',$('#q').value);say('');$('#res').innerHTML=r?`<div style="border-left:3px solid var(--gold);padding:8px 16px;margin-top:8px"><b>${esc(r.nama)}</b><br>${esc(r.no)}<br>${esc(r.program)}<br>Status: <span class="pill">${esc(r.status)}</span></div>`:'<p>Data tidak ditemukan. Periksa kembali penulisannya.</p>'}catch(x){say(x.message,true)}$('#go').disabled=false}}
 
 function route(){navi();const h=location.hash.replace('#/','');scrollTo(0,0);
- ({'':home,masuk:()=>authView('masuk'),daftar:()=>authView('daftar'),dashboard:dash,panel:panel,pengumuman:umum,akun:akunView,pembayaran:bayarView}[h]||home)()}
+ ({'':home,masuk:()=>authView('masuk'),daftar:()=>authView('daftar'),dashboard:dash,panel:panel,pengumuman:umum,akun:akunView,pembayaran:bayarView,lupa:lupaView}[h]||home)()}
 addEventListener('hashchange',route);route();
 </script></body></html>
